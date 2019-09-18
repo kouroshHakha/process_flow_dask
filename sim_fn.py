@@ -1,6 +1,7 @@
 from typing import Dict, Any
 from time import sleep
 from dask.distributed import get_client
+from params import Params
 
 def generate_layout(params: Dict[str, Any], lib_name: str, impl_name: str,
                     dep_list=None):
@@ -54,11 +55,12 @@ def generate_cell(params: Dict[str, Any], lib_name: str, impl_name: str, dep_lis
 
 def create_designs(params, lib_name, impl_name, dep_list=None):
     client = get_client()
-    sch_params = client.submit(generate_layout, params['layout_params'], lib_name, impl_name)
+    sch_params = client.submit(generate_layout, Params(params['layout_params']), lib_name,
+                               impl_name)
     drc_done = client.submit(run_drc, lib_name, impl_name, dep_list=sch_params)
 
     sch_done = {}
-    sch_done['main'] = client.submit(generate_schematic, sch_params, lib_name, impl_name,
+    sch_done['main'] = client.submit(generate_schematic, Params(sch_params), lib_name, impl_name,
                                      dep_list=sch_params)
 
     lvs_done = client.submit(run_lvs, lib_name, impl_name, dep_list=sch_done['main'])

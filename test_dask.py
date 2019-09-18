@@ -32,12 +32,11 @@ def run_sim(list_of_params: List[Dict[str, Any]]):
             res = future.exception()
         results.append(res)
 
-    pdb.set_trace()
 
 if __name__ == '__main__':
 
     # client = Client(processes=False)
-    client = Client(processes=True)
+    client = Client(processes=False)
     params = dict(
         dtsa_params=dict(
             layout_params=dict(
@@ -63,7 +62,7 @@ if __name__ == '__main__':
 
     s = time()
 
-    num_jobs = 5
+    num_jobs = 1
     list_of_params = []
     for i in range(num_jobs):
         new_params = deepcopy(params)
